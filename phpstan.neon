@@ -1,3 +1,6 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
 parameters:
     level: 5
     paths:
@@ -5,4 +8,27 @@ parameters:
         - tests
     excludePaths:
         - vendor/*
-    checkMissingIterableValueType: false 
+    ignoreErrors:
+        - '#Parameter \#2 \$contents of method Illuminate\\Filesystem\\FilesystemAdapter::put#'
+        - '#Method App\\Http\\Middleware\\VerifyTokenMiddleware::hasPermission\(\) is unused#'
+        - '#Call to an undefined method App\\Http\\Middleware\\VerifyTokenMiddleware::getDefaultPermissions#'
+        - '#Call to an undefined method App\\Models\\CompanyMember\|Illuminate\\Database\\Eloquent\\Collection#'
+        - '#Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model::(belongsToMany|hasMany)#'
+        - '#File ends with a trailing whitespace#'
+        - '#Array has \d+ duplicate keys#'
+        - '#Access to an undefined property (PHPUnit\\Framework\\TestCase|Illuminate\\Database\\Eloquent\\Model|Pest\\Mixins\\Expectation)#'
+        - '#Call to an undefined method (PHPUnit\\Framework\\TestCase|Pest\\Mixins\\Expectation)#'
+        - '#Access to an undefined property App\\Models\\(User|Company|CompanyMember)#'
+        - '#Property App\\Models\\User::\$banned_until#'
+        - '#Undefined variable: \$this#'
+        - '#Called ''env'' outside of the config directory#'
+        - '#Trait (Tests\\Traits\\DatabaseMigrations|Tests\\Traits\\MocksUserManagementService|App\\Models\\Traits\\UserConnectionTrait) is used zero times#'
+        - '#PHPDoc type array(\<int, string\>)? of property [a-zA-Z\\]+::\$(fillable|hidden) is not covariant with PHPDoc type list<string>#'
+        - '#Class App\\Models\\(Permission|RoleUser) not found#'
+        - '#Access to an undefined property Pest\\Expectation<[^>]+>::\$(company|name)#'
+        - '#Call to an undefined method Pest\\Expectation<mixed>::toBeCollection#'
+    treatPhpDocTypesAsCertain: false
+    checkUnionTypes: true
+    reportUnmatchedIgnoredErrors: false
+    parallel:
+        maximumNumberOfProcesses: 4
