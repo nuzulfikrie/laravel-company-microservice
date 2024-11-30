@@ -7,32 +7,27 @@ use Illuminate\Support\Facades\DB;
 
 class DBCreate extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'db:create {name}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Create a new database';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $databaseName = $this->argument('name');
 
-        $this->info("Creating database: $databaseName");
+        // Ensure $databaseName is a string
+        if (!is_string($databaseName)) {
+            $this->error('Invalid database name.');
+            return 1;
+        }
 
-        // Create database
-        DB::statement("CREATE DATABASE $databaseName");
+        try {
+            DB::statement("CREATE DATABASE IF NOT EXISTS `{$databaseName}`");
+            $this->info("Database `{$databaseName}` created successfully.");
+        } catch (\Exception $e) {
+            $this->error("Failed to create database `{$databaseName}`: " . $e->getMessage());
+            return 1;
+        }
 
-        $this->info("Database $databaseName created successfully");
+        return 0;
     }
 }
