@@ -210,39 +210,18 @@ return new class extends Migration
         Schema::create('company_notes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreignId('user_id')->constrained('users')->onUpdate('NO ACTION')->onDelete('CASCADE'); 
-            if (config('database.default') === 'mysql') {
-                $table->text('note')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('note');
-            }
+            $table->foreignId('user_id')->constrained('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->text('note')->collation('utf8mb4_unicode_ci');
             $table->timestamps();
         });
 
 
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            if (config('database.default') === 'mysql') {
-                $table->string('name')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('name');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('email')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('email');
-            }
-            if (config('database.default') === 'mysql') {
-                $table->string('phone')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('phone')->nullable();
-            }
-            if (config('database.default') === 'mysql') {
-                $table->text('address')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('address')->nullable();
-            }
+            $table->string('name')->collation('utf8mb4_unicode_ci');
+            $table->string('email')->collation('utf8mb4_unicode_ci');
+            $table->string('phone')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->text('address')->nullable()->collation('utf8mb4_unicode_ci');
             $table->timestamps();
             $table->unique('email', 'customers_email_unique');
         });
@@ -254,11 +233,7 @@ return new class extends Migration
             $table->date('invoice_date')->nullable(false);
             $table->date('due_date')->nullable(false);
             $table->decimal('total', 10, 2)->nullable(false);
-            if (config('database.default') === 'mysql') {   
-                $table->enum('status', ['pending', 'paid', 'cancelled'])->collation('utf8mb4_unicode_ci')->nullable(false);
-            } else {
-                $table->enum('status', ['pending', 'paid', 'cancelled'])->nullable(false);
-            }
+            $table->enum('status', ['pending', 'paid', 'cancelled'])->collation('utf8mb4_unicode_ci')->nullable(false);
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->index('customer_id', 'invoices_customer_id_foreign');
@@ -268,12 +243,8 @@ return new class extends Migration
         Schema::create('note_replies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('note_id')->constrained('company_notes')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreignId('replier_id')->constrained('users')->onUpdate('NO ACTION')->onDelete('CASCADE');  
-            if (config('database.default') === 'mysql') {
-                $table->text('reply')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('reply');
-            }
+            $table->foreignId('replier_id')->constrained('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->text('reply')->collation('utf8mb4_unicode_ci');
             $table->timestamps();
         });
 
@@ -286,38 +257,17 @@ return new class extends Migration
 
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            if (config('database.default') === 'mysql') {
-                $table->string('name')->collation('utf8mb4_unicode_ci')->nullable(false);
-            } else {
-                $table->string('name')->nullable(false);
-            }
+            $table->string('name')->collation('utf8mb4_unicode_ci')->nullable(false);
             $table->string('product_key')
                 ->unique()
                 ->nullable();
-
-            if (config('database.default') === 'mysql') {
-                $table->text('description')->collation('utf8mb4_unicode_ci')->nullable();
-            } else {
-                $table->text('description')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('type')->collation('utf8mb4_unicode_ci')->nullable();
-            } else {
-                $table->string('type')->nullable();
-            }
-
-
+            $table->text('description')->collation('utf8mb4_unicode_ci')->nullable();
+            $table->string('type')->collation('utf8mb4_unicode_ci')->nullable();
             $table->boolean('active')->default(1)->comment('Flag to determine if product is active or not');
             $table->decimal('price', 8, 2)->nullable(false);
             $table->unsignedInteger('quantity')->nullable(false);
             $table->boolean('is_subscription')->default(0)->comment('Flag to indicate if product is a subscription product.');
-
-            if (config('database.default') === 'mysql') {
-                $table->string('subscription_period')->collation('utf8mb4_unicode_ci')->nullable()->comment('Subscription period for the product. valid period values are: daily, weekly, monthly, yearly. Only valid for subscription products.');
-            } else {
-                $table->string('subscription_period')->nullable()->comment('Subscription period for the product. valid period values are: daily, weekly, monthly, yearly. Only valid for subscription products.');
-            }
+            $table->string('subscription_period')->collation('utf8mb4_unicode_ci')->nullable()->comment('Subscription period for the product. valid period values are: daily, weekly, monthly, yearly. Only valid for subscription products.');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -325,18 +275,8 @@ return new class extends Migration
         Schema::create('product_features', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            if (config('database.default') === 'mysql') {
-                $table->string('feature_name')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('feature_name');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('feature_value')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('feature_value');
-            }
-
+            $table->string('feature_name')->collation('utf8mb4_unicode_ci');
+            $table->string('feature_value')->collation('utf8mb4_unicode_ci');
             $table->boolean('active')->default(1);
             $table->timestamps();
             $table->softDeletes();
@@ -347,11 +287,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->decimal('amount', 8, 2);
-            if (config('database.default') === 'mysql') {
-                $table->string('currency', 3)->default('MYR')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('currency', 3)->default('MYR');
-            }
+            $table->string('currency', 3)->default('MYR')->collation('utf8mb4_unicode_ci');
             $table->boolean('default_price')->default(0);
             $table->boolean('active')->default(1);
             $table->timestamps();
@@ -361,24 +297,9 @@ return new class extends Migration
 
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
-
-            if (config('database.default') === 'mysql') {
-                $table->string('key')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('key');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->text('value')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('value')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('type', 50)->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('type', 50);
-            }
+            $table->string('key')->collation('utf8mb4_unicode_ci');
+            $table->text('value')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('type', 50)->collation('utf8mb4_unicode_ci');
             $table->boolean('is_active')->default(1);
             $table->timestamps();
             $table->unique('key', 'site_settings_key_unique');
@@ -391,26 +312,10 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->date('start_date')->nullable()->comment('Start date of the subscription.');
             $table->date('end_date')->nullable()->comment('End date of the subscription.');
-
-            if (config('database.default') === 'mysql') {   
-                $table->string('name')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('name');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->text('description')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('description')->nullable();
-            }
+            $table->string('name')->collation('utf8mb4_unicode_ci');
+            $table->text('description')->nullable()->collation('utf8mb4_unicode_ci');
             $table->boolean('is_subscription_admin')->default(0);
-
-            if (config('database.default') === 'mysql') {
-                $table->enum('status', ['pending', 'active', 'cancelled', 'deactivated', 'suspended', 'expired'])->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->enum('status', ['pending', 'active', 'cancelled', 'deactivated', 'suspended', 'expired']);
-            }
-
+            $table->enum('status', ['pending', 'active', 'cancelled', 'deactivated', 'suspended', 'expired'])->collation('utf8mb4_unicode_ci');
             $table->boolean('is_shared')->default(0);
             $table->boolean('is_split')->default(false);
             $table->timestamps();
@@ -429,35 +334,17 @@ return new class extends Migration
         });
 
 
-            Schema::create('subscription_history', function (Blueprint $table) {
+        Schema::create('subscription_history', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subscription_id')->constrained('subscriptions')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            if (config('database.default') === 'mysql') {
-                $table->string('subscription_status')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('subscription_status')->nullable();
-            }
+            $table->string('subscription_status')->nullable()->collation('utf8mb4_unicode_ci');
             $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('NO ACTION')->onDelete('SET NULL');
             $table->date('start_date')->nullable()->comment('Start date of the subscription.');
             $table->date('end_date')->nullable()->comment('End date of the subscription.');
-            if (config('database.default') === 'mysql') {
-                $table->enum('event_type', ['created', 'updated', 'status_changed', 'shared', 'unshared'])->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->enum('event_type', ['created', 'updated', 'status_changed', 'shared', 'unshared']);
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->text('description')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('description')->nullable();
-            }
-
+            $table->enum('event_type', ['created', 'updated', 'status_changed', 'shared', 'unshared'])->collation('utf8mb4_unicode_ci');
+            $table->text('description')->nullable()->collation('utf8mb4_unicode_ci');
             $table->timestamp('event_date')->useCurrent();
-            if (config('database.default') === 'mysql') {
-                $table->string('product_ids')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('product_ids')->nullable();
-            }
+            $table->string('product_ids')->nullable()->collation('utf8mb4_unicode_ci');
             $table->boolean('multiple_products')->default(0);
             $table->timestamps();
         });
@@ -470,11 +357,7 @@ return new class extends Migration
             $table->timestamp('added_at')->useCurrent();
             $table->unsignedInteger('usage_limit')->default(0);
             $table->unsignedInteger('usage_count')->default(0);
-            if (config('database.default') === 'mysql') {
-                $table->string('status')->default('active')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('status')->default('active');
-            }
+            $table->string('status')->default('active')->collation('utf8mb4_unicode_ci');
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
             $table->boolean('is_tracked')->default(1);
@@ -486,66 +369,17 @@ return new class extends Migration
         Schema::create('subscription_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('NO ACTION')->onDelete('SET NULL');
-            if (config('database.default') === 'mysql') {
-                $table->string('product_list')->collation('utf8mb4_unicode_ci')->comment('List of products to subscribe to. comma separated list of product ids.');
-            } else {
-                $table->string('product_list')->comment('List of products to subscribe to. comma separated list of product ids.');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('subscription_period')->collation('utf8mb4_unicode_ci')->comment('Subscription period for the request. valid period values are: daily, weekly, monthly, yearly. Only valid for subscription products.');
-            } else {
-                $table->string('subscription_period')->comment('Subscription period for the request. valid period values are: daily, weekly, monthly, yearly. Only valid for subscription products.');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('name')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('name');
-            }
-
-
-            if (config('database.default') === 'mysql') {
-                $table->string('email')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('email');
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('organization_name')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('organization_name')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('organization_phone')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('organization_phone')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('organization_address')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('organization_address')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->string('organization_website')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->string('organization_website')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->text('organization_note')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('organization_note')->nullable();
-            }
-
-            if (config('database.default') === 'mysql') {
-                $table->enum('status', ['pending', 'approved', 'rejected'])->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->enum('status', ['pending', 'approved', 'rejected']);
-            }
+            $table->string('product_list')->collation('utf8mb4_unicode_ci')->comment('List of products to subscribe to. comma separated list of product ids.');
+            $table->string('subscription_period')->collation('utf8mb4_unicode_ci')->comment('Subscription period for the request. valid period values are: daily, weekly, monthly, yearly. Only valid for subscription products.');
+            $table->string('name')->collation('utf8mb4_unicode_ci');
+            $table->string('phone')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('email')->collation('utf8mb4_unicode_ci');
+            $table->string('organization_name')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('organization_phone')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('organization_address')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('organization_website')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->text('organization_note')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->collation('utf8mb4_unicode_ci');
             $table->timestamps();
         });
 
@@ -554,11 +388,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('subscription_request_id')->constrained('subscription_requests')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreignId('user_id')->constrained('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            if (config('database.default') === 'mysql') {
-                $table->text('note')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('note');
-            }
+            $table->text('note')->collation('utf8mb4_unicode_ci');
             $table->timestamps();
         });
 
@@ -567,11 +397,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('srn_id')->constrained('subscription_request_notes')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('replier_id')->constrained('users')->onUpdate('CASCADE')->onDelete('CASCADE');
-            if (config('database.default') === 'mysql') {
-                $table->text('reply')->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->text('reply');
-            }
+            $table->text('reply')->collation('utf8mb4_unicode_ci');
             $table->timestamps();
         });
 
@@ -579,11 +405,7 @@ return new class extends Migration
         Schema::create('subscription_usage', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subscription_id')->nullable()->constrained('subscriptions')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            if (config('database.default') === 'mysql') {
-                $table->mediumText('description')->nullable()->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->mediumText('description')->nullable();
-            }
+            $table->mediumText('description')->nullable()->collation('utf8mb4_unicode_ci');
             $table->integer('usage');
             $table->date('date');
             $table->timestamps();
@@ -653,11 +475,7 @@ return new class extends Migration
             $table->unsignedBigInteger('invoice_id');
             $table->date('payment_date');
             $table->decimal('amount', 10, 2);
-            if (config('database.default') === 'mysql') {
-                $table->enum('method', ['credit_card', 'bank_transfer', 'cash', 'gateway'])->collation('utf8mb4_unicode_ci');
-            } else {
-                $table->enum('method', ['credit_card', 'bank_transfer', 'cash', 'gateway']);
-            }
+            $table->enum('method', ['credit_card', 'bank_transfer', 'cash', 'gateway'])->collation('utf8mb4_unicode_ci');
             $table->timestamps();
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');

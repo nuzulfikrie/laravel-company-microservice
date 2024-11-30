@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Config;
 
 class ServiceAuthMiddleware
 {
@@ -12,17 +12,13 @@ class ServiceAuthMiddleware
     {
         $token = $request->header('Authorization');
 
-        if (!$token) {
+        if (! $token) {
             return response()->json(['error' => 'Unauthorized: No token provided'], 401);
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => $token,
-            'X-Service-Key' => config('services.user_management.key'),
-            'X-Service-ID' => config('services.user_management.id'),
-        ])->get(config('services.user_management.base_url') . '/api/auth/verify-token');
+        $expectedToken = Config::get('services.user_management.key');
 
-        if ($response->failed()) {
+        if ($token !== $expectedToken) {
             return response()->json(['error' => 'Unauthorized: Invalid token'], 401);
         }
 

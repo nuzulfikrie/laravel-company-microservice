@@ -2,16 +2,22 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserEnum;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-use App\Enums\UserEnum;
 
 class RoleSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // Create roles
-        foreach (UserEnum::getAllRoles() as $role) {
+        $roles = [
+            UserEnum::getSuperAdmin(),
+            UserEnum::getAdmin(),
+            UserEnum::getModerator(),
+            UserEnum::getUser(),
+        ];
+
+        foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
         }
     }

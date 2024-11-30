@@ -6,28 +6,17 @@ use Illuminate\Support\Facades\Http;
 
 trait MocksUserManagementService
 {
-    protected function mockSuccessfulAuthorization(array $userData = null)
-    {
-        if ($userData === null) {
-            $userData = [
-                'id' => 1,
-                'email' => 'test@example.com',
-                'roles' => ['super-admin'],
-                'status' => 'active'
-            ];
-        }
-
-        Http::fake([
-            '*' => Http::response($userData, 200),
-        ]);
-
-        return $userData;
-    }
-
-    protected function mockFailedAuthorization()
+    protected function mockUserManagementService(): void
     {
         Http::fake([
-            '*' => Http::response(['error' => 'Unauthorized'], 401),
+            '*' => function ($request) {
+                return Http::response([
+                    'id' => 1,
+                    'email' => 'test@example.com',
+                    'roles' => ['super-admin'],
+                    'status' => 'active',
+                ]);
+            },
         ]);
     }
 }
